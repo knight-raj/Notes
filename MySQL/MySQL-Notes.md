@@ -193,3 +193,144 @@ MySQL has three main data types: **string**, **numeric**, and **date and time**.
 
 **Note:** MySQL 8.0 does not support year in two-digit format.
 
+# MySQL Operators and DDL Commands
+
+## MySQL Operators
+In MySQL, there are 9 main types of operators:
+
+1. **Arithmetic Operators**  -- Perform basic mathematical operations
+2. **Comparison Operators**  -- Compare values (e.g., =, !=, >, <)
+3. **Logical Operators**  -- Used to combine multiple conditions (e.g., AND, OR, NOT)
+4. **String Operators**  -- Manipulate string values
+5. **Bitwise Operators**  -- Perform bitwise operations
+6. **Set Operators**  -- Used with multiple queries (e.g., UNION, INTERSECT)
+7. **NULL Operators**  -- Check for NULL values
+8. **Existence Operators**  -- Used to check existence conditions (e.g., EXISTS)
+9. **Other Operators** (such as DISTINCT, ORDER BY, LIMIT) -- Provide additional functionalities
+
+## DDL (Data Definition Language)
+DDL commands are used to define and modify database structures.
+
+- **CREATE**  -- Creates new database objects like tables
+- **ALTER**  -- Modifies existing database objects
+- **RENAME**  -- Changes the name of a database object
+- **TRUNCATE**  -- Removes all records from a table without logging
+- **DROP**  -- Deletes a database object
+
+## SQL Queries
+
+### Creating the Student Table
+```sql
+-- Creating a table to store student records
+CREATE TABLE student(
+    rollno INT PRIMARY KEY,  -- Unique roll number for each student
+    name VARCHAR(50),       -- Name of the student
+    marks INT NOT NULL,     -- Marks obtained (cannot be NULL)
+    grade VARCHAR(1),       -- Grade assigned (single character)
+    city VARCHAR(20)        -- City name (up to 20 characters)
+);
+```
+
+### Inserting Multiple Records into the Student Table
+```sql
+-- Inserting multiple student records into the table
+INSERT INTO student
+(rollno, name, marks, grade, city)
+VALUES
+(101, "Ankit", 94, "A", "Narkatiaganj"),
+(102, "Rahul", 85, "B", "Merath"),
+(103, "Saket", 71, "C", "Gaya"),
+(105, "Pawan", 61, "D", "Patna"),
+(106, "Shyam", 50, "F", "BTH"),
+(107, "Rohit", 73, "C", "Narkatiaganj"),
+(108, "Anuradha", 22, "F", "Patna");
+```
+
+### Retrieving Data
+```sql
+-- Selecting all student records
+SELECT * FROM student;
+
+-- Selecting only name and marks columns
+SELECT name, marks FROM student;
+
+-- Selecting unique city names
+SELECT DISTINCT city FROM student;
+
+-- Selecting students with marks greater than 70 from "Narkatiaganj"
+SELECT * FROM student WHERE marks > 70 AND city = "Narkatiaganj";
+
+-- Selecting students from "Narkatiaganj"
+SELECT * FROM student WHERE city = "Narkatiaganj";
+
+-- Selecting students with marks greater than 60 or from "Patna"
+SELECT * FROM student WHERE marks > 60 OR city = "Patna";
+
+-- Selecting students with marks between 70 and 90
+SELECT * FROM student WHERE marks BETWEEN 70 AND 90;
+
+-- Selecting only the first 3 records
+SELECT * FROM student LIMIT 3;
+
+-- Selecting the first 3 students with marks greater than 75
+SELECT * FROM student WHERE marks > 75 LIMIT 3;
+
+-- Sorting students by city name in ascending order
+SELECT * FROM student ORDER BY city ASC;
+
+-- Selecting top 3 students with highest marks
+SELECT * FROM student ORDER BY marks DESC LIMIT 3;
+```
+
+### Aggregate Functions
+```sql
+-- Finding the highest marks in the student table
+SELECT MAX(marks) FROM student;
+
+-- Finding the lowest marks in the student table
+SELECT MIN(marks) FROM student;
+
+-- Calculating the average marks of students
+SELECT AVG(marks) FROM student;
+
+-- Counting the number of students in the table
+SELECT COUNT(name) FROM student;
+```
+
+### Grouping and Aggregation
+```sql
+-- Grouping students by city and selecting city names
+SELECT city FROM student GROUP BY city;
+
+-- Counting the number of students in each city
+SELECT city, COUNT(rollno) FROM student GROUP BY city;
+
+-- Counting students grouped by both city and name
+SELECT city, name, COUNT(rollno) FROM student GROUP BY city, name;
+
+-- Calculating the average marks per city and sorting by city name
+SELECT city, AVG(marks) FROM student GROUP BY city ORDER BY city;
+
+-- Calculating the average marks per city and sorting by average marks
+SELECT city, AVG(marks) FROM student GROUP BY city ORDER BY AVG(marks);
+
+-- Sorting the average marks per city in descending order
+SELECT city, AVG(marks) FROM student GROUP BY city ORDER BY AVG(marks) DESC;
+
+-- Counting the number of students per grade and sorting by grade
+SELECT grade, COUNT(rollno) FROM student GROUP BY grade ORDER BY grade;
+```
+
+### Using HAVING Clause
+```sql
+-- Grouping students by city and counting the number of students in each city, filtering with HAVING clause
+SELECT city, COUNT(rollno) FROM student GROUP BY city HAVING MAX(marks) > 60;
+
+-- Retrieving cities where at least one student has grade 'C' and the maximum marks in that city are greater than 72
+SELECT city FROM student WHERE grade = "C" GROUP BY city HAVING MAX(marks) > 72 ORDER BY city DESC;
+```
+
+
+
+
+
