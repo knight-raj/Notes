@@ -217,6 +217,175 @@ DDL commands are used to define and modify database structures.
 - **TRUNCATE**  -- Removes all records from a table without logging
 - **DROP**  -- Deletes a database object
 
+
+# SQL Notes
+
+## **SQL Syntax Format**
+```
+COLUMN_NAME DATA_TYPE(SIZE) CONSTRAINTS;
+```
+- **COLUMN_NAME** → The name of the column.
+- **DATA_TYPE(SIZE)** → The data type and size (optional for some types like `INT`).
+- **CONSTRAINTS** → Conditions like `NOT NULL`, `PRIMARY KEY`, `UNIQUE`, etc.
+
+## **📌 Integer Data Types in MySQL**
+
+| **Data Type** | **Storage Size** | **Signed Range** (`-` to `+`) | **Unsigned Range** (`0` to `+`) |
+|--------------|---------------|----------------------------------|------------------------------|
+| **TINYINT**  | **1 byte**  | `-128` to `127`  | `0` to `255` |
+| **SMALLINT** | **2 bytes**  | `-32,768` to `32,767`  | `0` to `65,535` |
+| **MEDIUMINT** | **3 bytes**  | `-8,388,608` to `8,388,607`  | `0` to `16,777,215` |
+| **INT (INTEGER)** | **4 bytes**  | `-2,147,483,648` to `2,147,483,647`  | `0` to `4,294,967,295` |
+| **BIGINT**   | **8 bytes**  | `-9,223,372,036,854,775,808` to `9,223,372,036,854,775,807` | `0` to `18,446,744,073,709,551,615` |
+
+### **🚀 Best Practices for Choosing Integer Types**
+| **Scenario** | **Best Type** |
+|-------------|-------------|
+| Storing **boolean values** (`0/1`) | `TINYINT(1)` |
+| Counting **small objects** (students in a class) | `SMALLINT` |
+| **Population of a city** | `MEDIUMINT` |
+| **General-purpose IDs, orders, users** | `INT` |
+| **Very large numbers (billions, trillions, money transactions)** | `BIGINT` |
+
+---
+
+## **🔴 Misconception About INT(10)**
+
+```sql
+CREATE TABLE Students (
+    rollno INT(10) NOT NULL PRIMARY KEY
+);
+```
+- `INT(10)` **does NOT mean** it can store bigger numbers than `INT` alone.
+- `INT(10)` **does NOT increase storage size**.
+- The size inside parentheses `(10)` **only affects `ZEROFILL` behavior** (if enabled).
+
+### ✅ **Correct Way (Recommended)**
+```sql
+CREATE TABLE Students (
+    rollno INT NOT NULL PRIMARY KEY
+);
+```
+- Just writing `INT` is **enough** and **correct**.
+- `INT` **always uses 4 bytes** of storage.
+- It supports values from **`-2,147,483,648` to `2,147,483,647`**.
+
+---
+
+## **📌 When Does INT(10) Matter?**
+If you use `ZEROFILL`, it **pads numbers with leading zeros**:
+
+```sql
+CREATE TABLE Students (
+    rollno INT(10) ZEROFILL PRIMARY KEY
+);
+```
+Now, inserting `1` into `rollno` will display:
+```
+0000000001
+```
+- The `(10)` **means it displays numbers with at least 10 digits**, padding with zeros.
+- **Does NOT affect storage or value range**.
+
+---
+
+## **What is `ZEROFILL` in MySQL?**
+`ZEROFILL` is an attribute in MySQL that **pads numeric values with leading zeros** when displayed. It **does NOT affect storage or calculations—only how numbers appear when retrieved**.
+
+### ✅ **Example Without `ZEROFILL`**
+```sql
+CREATE TABLE Students (
+    rollno INT(5) NOT NULL PRIMARY KEY
+);
+INSERT INTO Students (rollno) VALUES (7), (25), (123);
+SELECT rollno FROM Students;
+```
+**🔹 Output (Without `ZEROFILL`)**
+```
+rollno
+------
+7
+25
+123
+```
+🔹 **Numbers are displayed as normal—no leading zeros.**
+
+### ✅ **Example With `ZEROFILL`**
+```sql
+CREATE TABLE Students (
+    rollno INT(5) ZEROFILL PRIMARY KEY
+);
+INSERT INTO Students (rollno) VALUES (7), (25), (123);
+SELECT rollno FROM Students;
+```
+**🔹 Output (With `ZEROFILL`)**
+```
+rollno
+------
+00007
+00025
+00123
+```
+🔹 **Numbers are displayed with leading zeros to match the `(5)` width.**
+
+### 🚨 **Important Notes About `ZEROFILL`**
+- `ZEROFILL` **only affects display, NOT storage**.
+- It **automatically makes the column `UNSIGNED`**, meaning **it cannot store negative values**.
+- **Deprecated in MySQL 8.0.17 and later** (not recommended for new projects).
+- **Does NOT work on `BIGINT`, `SMALLINT`, `TINYINT`, etc., in newer MySQL versions**.
+
+---
+
+## **ALTER Command: Modifying Existing Tables**
+
+### ✅ **Add a Column in an Existing Table**
+```sql
+ALTER TABLE Students
+ADD COLUMN school VARCHAR(255);
+```
+- **`ALTER TABLE Students`** → Modifies the `Students` table.
+- **`ADD COLUMN school VARCHAR(255)`** → Adds a new column named `school` with a `VARCHAR(255)` data type.
+
+#### **Optional Modifications**
+1. **Set a Default Value:**
+   ```sql
+   ALTER TABLE Students
+   ADD COLUMN school VARCHAR(255) DEFAULT 'Unknown';
+   ```
+2. **Make the Column `NOT NULL`**:
+   ```sql
+   ALTER TABLE Students
+   ADD COLUMN school VARCHAR(255) NOT NULL;
+   ```
+   **⚠️ If the table already has data, you'll need to provide a default value, or it will fail.**
+3. **Add the Column at a Specific Position:**
+   ```sql
+   ALTER TABLE Students
+   ADD COLUMN school VARCHAR(255) AFTER name;
+   ```
+
+---
+
+### ✅ **Remove a Column from an Existing Table**
+```sql
+ALTER TABLE Students
+DROP COLUMN school;
+```
+- **`ALTER TABLE Students`** → Modifies the `Students` table.
+- **`DROP COLUMN school`** → Removes the `school` column from the table.
+
+#### **🚨 Important Notes:**
+- **Data Loss Warning:** ⚠️ This operation **permanently deletes** the column and its data.
+- **Make sure to back up your data before executing this command.**
+
+#### **Remove Multiple Columns:**
+```sql
+ALTER TABLE Students
+DROP COLUMN school,
+DROP COLUMN city;
+```
+
+---
 ## SQL Queries
 
 ### Creating the Student Table
