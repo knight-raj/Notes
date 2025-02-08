@@ -1,4 +1,4 @@
-# Database and DBMS
+# MySQL
 
 ## What is a Database?
 A database is a collection of data stored in a structured format that can be easily accessed digitally.
