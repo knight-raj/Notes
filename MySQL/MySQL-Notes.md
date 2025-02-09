@@ -341,6 +341,10 @@ ADD COLUMN school VARCHAR(255);
    ALTER TABLE Students
    ADD COLUMN school VARCHAR(255) DEFAULT 'Unknown';
    ```
+
+    If you do not provide a value for school, it defaults to 'Unknown'.
+    If you do provide a value for school, that value is stored instead like "ABC School".
+
 2. **Make the Column `NOT NULL`**:
    ```sql
    ALTER TABLE Students
@@ -352,6 +356,7 @@ ADD COLUMN school VARCHAR(255);
    ALTER TABLE Students
    ADD COLUMN school VARCHAR(255) AFTER name;
    ```
+   
 
 ---
 
@@ -375,7 +380,46 @@ DROP COLUMN city;
 ```
 
 ---
-## SQL Queries
+# SQL Queries
+
+## Selecting and Using a Database
+If you want to switch to a specific database or before creating any table in a database for the first time, use:
+
+```sql
+USE databasename; -- Here use Database name here "Practice"
+```
+
+Then, you can verify it with:
+
+```sql
+SELECT DATABASE();
+```
+
+However, you must use `USE practice;` (or specify the database in queries) to ensure your commands run on the correct database.
+
+### Example without `SELECT DATABASE();`
+
+```sql
+CREATE DATABASE practice;
+USE practice;  -- This is necessary to switch to the correct database
+
+CREATE TABLE student (
+    rollno INT PRIMARY KEY,
+    name VARCHAR(255),
+    school VARCHAR(50) NOT NULL
+);
+```
+
+OR, if you don’t use `USE practice;`, you can specify the database directly:
+
+```sql
+CREATE TABLE practice.student (
+    rollno INT PRIMARY KEY,
+    name VARCHAR(255),
+    school VARCHAR(50) NOT NULL
+);
+```
+
 
 ### Creating the Student Table
 ```sql
@@ -439,6 +483,134 @@ SELECT * FROM student ORDER BY city ASC;
 -- Selecting top 3 students with highest marks
 SELECT * FROM student ORDER BY marks DESC LIMIT 3;
 ```
+
+
+---
+
+# Using LIMIT in SQL Queries
+
+## What is the LIMIT Clause?
+The `LIMIT` clause is used to restrict the number of rows returned or affected by a query. It is commonly used in `SELECT`, `UPDATE`, and `DELETE` operations.
+
+## Supported Databases
+- `LIMIT` is not part of the official SQL standard (ANSI SQL).
+- Only MySQL and PostgreSQL support `LIMIT` with `SELECT`, `UPDATE`, and `DELETE`.
+- SQL Server and Oracle do not support `LIMIT` in `UPDATE` or `DELETE`. Instead, they use alternatives like `TOP` (SQL Server) or `ROWNUM` (Oracle).
+
+## 1. Using LIMIT with SELECT
+
+`LIMIT` is mainly used in `SELECT` queries to fetch a limited number of rows.
+
+### Example 1: Fetch the first 3 students
+
+```sql
+SELECT * FROM student ORDER BY rollno ASC LIMIT 3;
+```
+
+This retrieves only 3 rows ordered by `rollno`.
+
+### Example 2: Using LIMIT with OFFSET
+
+```sql
+SELECT * FROM student ORDER BY rollno ASC LIMIT 3 OFFSET 2;
+```
+
+This skips the first 2 rows and then fetches 3 rows.
+
+---
+
+## 2. Using LIMIT with UPDATE
+
+In MySQL, `LIMIT` in an `UPDATE` query ensures that only a specific number of rows are modified.
+
+### Example: Update school name for only 1 student
+
+```sql
+UPDATE student
+SET school = 'Updated School'
+ORDER BY rollno ASC
+LIMIT 1;
+```
+
+This updates the school name for only 1 student, based on the `ORDER BY rollno ASC` condition.
+If `ORDER BY` is not used, MySQL will randomly pick a matching row.
+
+### How to Check Which Row Will Be Updated?
+Before running the `UPDATE`, use this `SELECT` query:
+
+```sql
+SELECT * FROM student ORDER BY rollno ASC LIMIT 1;
+```
+
+This helps identify which student will be updated first.
+
+### PostgreSQL Alternative: Using RETURNING
+
+```sql
+UPDATE student
+SET school = 'Updated School'
+ORDER BY rollno ASC
+LIMIT 1
+RETURNING *;
+```
+
+PostgreSQL allows `RETURNING *` to show the updated row.
+
+---
+
+## 3. Using LIMIT with DELETE
+
+You can delete only a limited number of rows using `LIMIT` in MySQL.
+
+### Example: Delete only 2 students
+
+```sql
+DELETE FROM student
+ORDER BY rollno ASC
+LIMIT 2;
+```
+
+Even if more than 2 students match, this deletes only the first 2.
+
+### ORDER BY Must Have a Column Name
+You must specify which column to order by.
+
+Example:
+
+```sql
+ORDER BY rollno ASC;
+```
+
+### ASC (Ascending) or DESC (Descending)
+- `ASC` → Sorts from smallest to largest (default).
+- `DESC` → Sorts from largest to smallest.
+
+---
+
+# Using SQL OFFSET Clause
+
+SQL `OFFSET` is a powerful clause used to skip a specified number of rows in a query result. It is often combined with the `LIMIT` clause for data pagination.
+
+```sql
+SELECT column_names
+FROM table_name
+ORDER BY column_name
+LIMIT number_of_rows OFFSET offset_value;
+```
+
+### Example:
+
+#### Select all columns for students, starting from the 10th row
+
+```sql
+SELECT rollno, name, school
+FROM student
+ORDER BY rollno
+OFFSET 9 ROWS;
+```
+
+Since `OFFSET 9 ROWS` skips the first 9 rows, the result starts from the 10th row.
+
 
 ### Aggregate Functions
 ```sql
