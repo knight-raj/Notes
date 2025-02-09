@@ -1,4 +1,4 @@
-# Database and DBMS
+# MySQL
 
 ## What is a Database?
 A database is a collection of data stored in a structured format that can be easily accessed digitally.
@@ -207,6 +207,8 @@ In MySQL, there are 9 main types of operators:
 7. **NULL Operators**  -- Check for NULL values
 8. **Existence Operators**  -- Used to check existence conditions (e.g., EXISTS)
 9. **Other Operators** (such as DISTINCT, ORDER BY, LIMIT) -- Provide additional functionalities
+
+ <img src="https://github.com/user-attachments/assets/fe8c4743-5529-4ec5-bd14-5cca36fe0d11" alt="Operators1" width="400"/>
 
 ## DDL (Data Definition Language)
 DDL commands are used to define and modify database structures.
