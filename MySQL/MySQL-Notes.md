@@ -485,7 +485,7 @@ SELECT * FROM student ORDER BY city ASC;
 -- Selecting top 3 students with highest marks
 SELECT * FROM student ORDER BY marks DESC LIMIT 3;
 ```
-
+**Notes:** By default, the **ORDER BY** clause sorts in ascending order (smallest to largest).
 
 ---
 
