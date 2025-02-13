@@ -661,8 +661,14 @@ SELECT city, COUNT(rollno) FROM student GROUP BY city HAVING MAX(marks) > 60;
 -- Retrieving cities where at least one student has grade 'C' and the maximum marks in that city are greater than 72
 SELECT city FROM student WHERE grade = "C" GROUP BY city HAVING MAX(marks) > 72 ORDER BY city DESC;
 ```
-
-
-
-
+# Joins
+![image](https://github.com/user-attachments/assets/926e5421-7f04-4530-922f-03272d3f6f8b)
+![image](https://github.com/user-attachments/assets/128cb3ef-8522-4e18-a062-dd7b8d1fd26d)
+![image](https://github.com/user-attachments/assets/e5eafdc6-cf90-46b6-ba36-f3b13389f45a)
+![image](https://github.com/user-attachments/assets/2fde11b8-2132-4a6c-a2e1-be8886430800)
+![image](https://github.com/user-attachments/assets/5ebc35d4-ca7e-44e0-a8da-2d6fa1c81e43)
+![image](https://github.com/user-attachments/assets/ce930822-c65c-4b0f-ad11-a582272a5bee)
+![image](https://github.com/user-attachments/assets/fa48b08e-c3e9-413e-90c3-379d3ab562ab)
+![image](https://github.com/user-attachments/assets/18849594-0ee4-4f52-bf7d-25e2a13b336c)
+![image](https://github.com/user-attachments/assets/c9eb96f7-0bcf-4d0c-85ff-3f338548164a)
 
